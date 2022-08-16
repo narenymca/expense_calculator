@@ -5,8 +5,11 @@ import 'package:intl/intl.dart';
 
 class NewTransaction extends StatefulWidget {
   final Function addTx;
-  
-  NewTransaction({Key key, @required this.addTx, }) : super(key: key);
+
+  NewTransaction({
+    Key key,
+    @required this.addTx,
+  }) : super(key: key);
 
   @override
   State<NewTransaction> createState() => _NewTransactionState();
@@ -53,60 +56,67 @@ class _NewTransactionState extends State<NewTransaction> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: double.maxFinite,
-      padding: const EdgeInsets.all(10),
-      child: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.end,
-          children: [
-            TextField(
-              controller: _titleController,
-              onSubmitted: (_) => _submitData(),
-              // onChanged: (val) {
-              //   titleInput = val;
-              // },
-              decoration: const InputDecoration(
-                labelText: 'Title',
+    return SingleChildScrollView(
+      child: Container(
+        height: 600,
+        padding: EdgeInsets.only(
+          top: 10,
+          left: 10,
+          right: 10,
+          bottom: MediaQuery.of(context).viewInsets.bottom + 10,
+        ),
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              TextField(
+                controller: _titleController,
+                onSubmitted: (_) => _submitData(),
+                // onChanged: (val) {
+                //   titleInput = val;
+                // },
+                decoration: const InputDecoration(
+                  labelText: 'Title',
+                ),
               ),
-            ),
-            TextField(
-              keyboardType: TextInputType.number,
-              controller: _amountController,
-              onSubmitted: (_) => _submitData(),
-              // onChanged: (val) {
-              //   amountInput = val;
-              // },
-              decoration: const InputDecoration(
-                labelText: 'Amount',
+              TextField(
+                keyboardType: TextInputType.number,
+                controller: _amountController,
+                onSubmitted: (_) => _submitData(),
+                // onChanged: (val) {
+                //   amountInput = val;
+                // },
+                decoration: const InputDecoration(
+                  labelText: 'Amount',
+                ),
               ),
-            ),
-            Container(
-              height: 70,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(_selectedDate == null
-                      ? 'No  Date Chosen       '
-                      : 'Picked Date: ${DateFormat('dd MMM yy').format(_selectedDate)}'),
-                  ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        onPrimary: Theme.of(context).primaryColor,
-                        primary: Colors.white,
-                        elevation: 0,
-                      ),
-                      onPressed: _presentDatePicker,
-                      child: const Text(
-                        'Choose Date',
-                      ))
-                ],
+              Container(
+                height: 70,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(_selectedDate == null
+                        ? 'No  Date Chosen       '
+                        : 'Picked Date: ${DateFormat('dd MMM yy').format(_selectedDate)}'),
+                    ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          onPrimary: Theme.of(context).primaryColor,
+                          primary: Colors.white,
+                          elevation: 0,
+                        ),
+                        onPressed: _presentDatePicker,
+                        child: const Text(
+                          'Choose Date',
+                        ))
+                  ],
+                ),
               ),
-            ),
-            ElevatedButton(
-              onPressed: _submitData,
-              child: const Text('Add Transaction'),
-            )
-          ],
+              ElevatedButton(
+                onPressed: _submitData,
+                child: const Text('Add Transaction'),
+              )
+            ],
+          ),
         ),
       ),
     );

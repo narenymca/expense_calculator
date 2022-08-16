@@ -6,8 +6,12 @@ import 'package:expense_tracker/widgets/new_transaction.dart';
 import 'package:expense_tracker/widgets/trasaction_list.dart';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 void main() {
+  // WidgetsFlutterBinding.ensureInitialized();
+  // SystemChrome.setPreferredOrientations(
+  //     [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
   runApp(MyApp());
 }
 
@@ -101,30 +105,75 @@ class _MyHomePageState extends State<MyHomePage> {
     showModalBottomSheet(
         context: ctx,
         builder: (_) {
-          return NewTransaction(addTx: _addNewTransaction,);
+          return NewTransaction(
+            addTx: _addNewTransaction,
+          );
         });
   }
 
+  bool _showChart = false;
+
   @override
   Widget build(BuildContext context) {
+    final mediaquery = MediaQuery.of(context);
+    final _isLandScape = mediaquery.orientation == Orientation.landscape;
+    final _appBar = AppBar(
+      title: const Text('Flutter App'),
+      actions: [
+        IconButton(
+            onPressed: () {
+              _startAddNewTransaction(context);
+            },
+            icon: const Icon(Icons.add))
+      ],
+    );
+    final _txListWidget = Container(
+      height: (mediaquery.size.height -
+              _appBar.preferredSize.height -
+              mediaquery.padding.top) *
+          0.7,
+      child: TransactionList(
+          transactions: _userTransactions, deleteTx: _deleteTractions),
+    );
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Flutter App'),
-        actions: [
-          IconButton(
-              onPressed: () {
-                _startAddNewTransaction(context);
-              },
-              icon: const Icon(Icons.add))
-        ],
-      ),
+      appBar: _appBar,
       body: SingleChildScrollView(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Chart(recentTransactions: _recentTransaction),
-            TransactionList(transactions: _userTransactions,deleteTx: _deleteTractions),
+            if (_isLandScape)
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text('Show Chart'),
+                  Switch(
+                    value: _showChart,
+                    onChanged: (value) {
+                      setState(() {
+                        _showChart = value;
+                      });
+                    },
+                  )
+                ],
+              ),
+            if (!_isLandScape)
+              Container(
+                  height: (mediaquery.size.height -
+                          _appBar.preferredSize.height -
+                          mediaquery.padding.top) *
+                      0.3,
+                  child: Chart(recentTransactions: _recentTransaction)),
+            if (!_isLandScape) _txListWidget,
+            if (_isLandScape)
+              _showChart
+                  ? Container(
+                      height: (mediaquery.size.height -
+                              _appBar.preferredSize.height -
+                              mediaquery.padding.top) *
+                          0.7,
+                      child: Chart(recentTransactions: _recentTransaction))
+                  : _txListWidget,
           ],
         ),
       ),
